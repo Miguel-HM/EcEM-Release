@@ -1,0 +1,117 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Español con EvaMol{% endblock %}
+
+{% block body %}
+    <div class="fondo">
+        <section>
+            <h2>Lesson Calendar</h2>
+            {% if app.user.students is defined %}
+                <div class="tab-container">
+                    <ul class="tabs">
+                        {% for student in app.user.students %}
+                            <a style="color:white;" href="#" data-target="tabf0-{{ loop.index }}" class="{{ loop.first ? 'active first' : (loop.index == 2 ? 'second' : 'third') }}">
+                                <img src="{{ asset('/img/avatar/' ~ student.avatar) }}" alt="A"> {{ student.name }}
+                            </a>
+                        {% endfor %}
+                    </ul>
+                    <div class="tab-content">
+                        {% for student in app.user.students %}
+                            <div id="tabf0-{{ loop.index }}" style="{{ loop.first ? 'display: block;' : 'display: none;' }}">
+                             {% include 'calendar/fullcalendar.html.twig' %}
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+				<div id="external-events" class="col">
+					<p>
+						<strong>Drag and drop into the calendar to book a lesson</strong>
+					</p>
+					<div class="fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event">
+						<div class="fc-event-main" id='draggable-el'>
+                        <button>
+							{% set hhmm = app.user.classDuration|split(':') %}
+							{% if hhmm[0] == '00' %}
+								{{ hhmm[1] }} min Lesson
+							{% elseif hhmm[1] =='00' %}
+								{{ hhmm[0] }} h Lesson
+							{% else %}
+								{{ hhmm[0] }} h {{ hhmm[1] }} min Lesson
+							{% endif %}
+                        </button> 
+						</div>
+					</div>
+				</div>
+            {% else %}
+                <p>You need to set your student details.</p> 
+                <button onclick="location.href='{{ path('app_student_new') }}';">Set student details</button>
+            {% endif %}
+            </div>
+        </section>
+        <script>
+            $(document).ready(function () {
+        	  var Draggable = FullCalendar.Draggable;
+			  var containerEl = document.getElementById('external-events');
+			  new Draggable(containerEl, {
+				itemSelector: '.fc-event',
+				eventData: function(eventEl) {
+				return {
+					title: eventEl.innerText,
+					duration: '{{ app.user.classDuration }}',
+					backgroundColor: '#5A8BDF',
+				};
+				}
+			  });
+			  calendar= [];
+              {% for student in app.user.students %}
+              NuevoCalendario({{ loop.index }}, {{ student.id }});
+              {% endfor %}
+							calendar[1].render();
+							$(".tabs a").on("click", function (e) {
+									e.preventDefault();
+									// Hide all tab content
+									$(this).parents(".tab-container").find(".tab-content > div").hide();
+									// Remove active class from all tabs
+									$(this).parents(".tabs").find("a").removeClass("active");
+									// Add active class to clicked tab and show its content
+									$(this).addClass("active");
+									$("#" + $(this).data("target")).show();
+									calendar[$(this).data("target").split('-')[1]].render();
+							});
+            });
+            // Creo un nuevo calendario para la pestaña del estudiante
+            function NuevoCalendario(tab, estudiante) {
+              calendar[tab]= new FullCalendar.Calendar(document.getElementById('calendar'+tab), {
+								googleCalendarApiKey: 'AIzaSyAUoArCj4EbKzjvcGHfGSbgUiSPqqGwKjE',
+								eventSources: [
+									{
+										googleCalendarId: 'cerezocableado@gmail.com',
+										color: 'green',
+										editable: false
+									}
+								],
+								initialView: 'timeGridWeek',
+								headerToolbar: {
+									left: 'prev,next today',
+									center: 'title',
+									right: 'dayGridMonth,timeGridWeek,timeGridDay'
+								},
+								slotMinTime: '09:00:00',
+								slotMaxTime: '21:00:00',
+								businessHours:  [
+									{
+											daysOfWeek: [ 1,2,3,4,5 ],
+											startTime: '14:00',
+											endTime: '20:00'
+									}
+								],
+								height: 'auto',
+								nowIndicator: true,
+								droppable: true,
+								eventStartEditable: true,
+							});
+							document.addEventListener('DOMContentLoaded', calendar[tab]);
+						};
+				</script>
+    </div>
+{% endblock %}

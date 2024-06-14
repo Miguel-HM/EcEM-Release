@@ -1,0 +1,61 @@
+{{ form_start(form) }}
+    
+    <div>
+        {{ form_label(form.name) }}
+        {{ form_widget(form.name) }}
+        {{ form_errors(form.name) }}
+    </div>
+    
+    <div id="avatar-selection" style="display: none;">
+    <div>
+        {{ form_label(form.avatar) }}
+    </div>
+    <div>
+        {{ form_widget(form.avatar) }}
+        {{ form_errors(form.avatar) }}
+    </div>
+    </div>
+
+    <button type="button" id="avatar-button" class="conFlecha"><i class="arrowDown"></i> &emsp; Select Avatar</button>
+
+    <div>
+        {% if is_granted('ROLE_ADMIN') %}
+            {{ form_label(form.parent) }}
+            {{ form_widget(form.parent) }}
+            {{ form_errors(form.parent) }}
+        {% else %}
+            {{ form_widget(form.parent) }}
+        {% endif %}
+    </div>
+
+    <button type="submit">{{ button_label|default('Save') }}</button>
+
+{{ form_end(form) }}
+
+<script>
+document.getElementById('avatar-button').addEventListener('click', function() {
+    var avatarSelection = document.getElementById('avatar-selection');
+    if (avatarSelection.style.display === 'none') {
+        avatarSelection.style.display = 'block';
+    } else {
+        avatarSelection.style.display = 'none';
+    }
+});
+
+    var avatarItems = document.querySelectorAll('.avatar-item');
+
+    avatarItems.forEach(function(avatarItem) {
+        avatarItem.addEventListener('click', function() {
+            // Remove the 'selected' class from all avatar items
+            avatarItems.forEach(function(item) {
+                item.classList.remove('selected');
+            });
+
+            // Add the 'selected' class to the clicked avatar item
+            avatarItem.classList.add('selected');
+
+            var radioButton = avatarItem.querySelector('input[type=radio]');
+            radioButton.checked = true;
+        });
+    });
+</script>

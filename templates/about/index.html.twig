@@ -1,0 +1,41 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}About me{% endblock %}
+
+{% block body %}
+     <div class="about-me">
+            <section>
+                <h2 class="extra">¡Hola, soy Eva Mol!</h2>
+                <div class="col-container">
+                    <div class="col about-me-img">
+                        <img src="{{ asset('/img/intro2.png') }}" alt="Eva Mol" style="margin:2rem;">
+                    </div>
+                    <div class="col row-container">
+                        <div class="row">
+                            <h3>My Story</h3>
+                            <p>After studying a degree in Translation and Interpreting, I decided to move to Barcelona to learn Spanish. I fell in love with the city and the language and decided to stay. I have been teaching Spanish for over 10 years and I am passionate about helping my students achieve their goals.</p>
+                        </div>
+                        <div class="row">
+                            <h3>My Approach</h3>
+                            <p>My approach to teaching is based on the communicative method. I believe that the best way to learn a language is by using it in real-life situations. I tailor my lessons to the interests and goals of my students to make learning fun and engaging.</p>
+                        </div>
+                    </div>
+                    <div class="row row-container">
+                        <div class="row">
+                            <h3>My Qualifications</h3>
+                            <p>I am a certified Spanish teacher with a degree in Translation and Interpreting and a master's degree in Teaching Spanish as a Foreign Language. I am also a certified examiner for the DELE exams.</p>
+                        </div>
+                        <div class="row">
+                            <h3>Get in Touch</h3>
+                            <p>If you are interested in learning Spanish with me, feel free to get in touch. I offer personalized lessons tailored to your goals and interests.</p>
+                        </div>
+                    </div>
+                    <div style="text-align: center; margin: auto;">
+                        <button onclick="location.href='{{ path('app_contact') }}';">Contact me</button>
+                    </div>
+                <div style="text-align: center; margin: auto; padding-top: 2em;">
+                    {% include 'common/_social-media.html.twig' %}
+                </div>
+            </section>
+        </div>
+{% endblock %}

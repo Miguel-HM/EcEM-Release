@@ -1,0 +1,15 @@
+<footer class="footer mt-auto py-3 text-center">
+    <div class="container d-flex justify-content-between">
+        <div style="text-align: left">
+            <a class="footer-brand" href="{{ path('app_landing') }}">
+                <img src="{{ asset('/img/logo.png') }}" alt="Logo" style="width: 30px; height: 30px;" class="d-inline-block align-top">
+                <img src="{{ asset('/img/EvaMol.png') }}" alt="E" style="height: 20px;">
+            </a>
+            <p class="mb-0" style="font-family: 'Metropolis Thin';">© 2024 Miguel Hernández Madrigal</p>
+            <p class="mb-0"><a style="font-family: 'Metropolis Thin'; text-decoration: none; color: white;" href="{{ path('app_attribution') }}">ℹ️ Attributions</a></p>
+        </div>
+        <div>
+            {% include 'common/_social-media.html.twig' %}
+        </div>
+    </div>
+</footer>

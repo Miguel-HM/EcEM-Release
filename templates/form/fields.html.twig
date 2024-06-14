@@ -1,0 +1,13 @@
+{% block choice_widget_expanded %}
+    <div {{ block('widget_container_attributes') }}>
+            {% for child in form %}
+                <div class="avatar-item">
+                    <img src="http://localhost:8000/assets/img/avatar/{{ child.vars.value }}">
+                    <label for="{{ child.vars.id }}">
+                        {{ form_widget(child, {attr: {class: 'form-check-input'}}) }}
+                    </label>
+                    {{ form_errors(child) }}
+                </div>
+            {% endfor %}
+    </div>
+{% endblock %}

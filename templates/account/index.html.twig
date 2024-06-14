@@ -1,0 +1,176 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Account{% endblock %}
+
+{% block body %}
+<section class="multi-panel">
+<div class="row-container">
+<div class="row">
+{% if app.user.parent %}
+    <div class="primera">
+        <h2>Welcome, {{ app.user.username }}!</h2>
+        <p style="text-align: left">Here you can manage your credit, request a top-up, and manage your children's accounts.</p>
+        <p style="text-align: left">To book a class simply go to the <a href="{{ path('app_calendar') }}">lesson calendar</a>, select the student for whom you wish to book a lesson, and make the booking request.</p>
+    </div>
+{% else %}
+    <div class="primera">
+        <h2 style="text-align: left">Welcome, {{ app.user.username }}!</h2>
+        <p>Here you can manage your credit, request a top-up, and manage your account details.</p>
+        <p>To book a class simply go to the <a href="{{ path('app_calendar') }}">lesson calendar</a> and make the booking request.</p>
+    </div>
+{% endif %}
+<div class="row col-container">
+    <div class="col">
+    <h2>Your credit</h2>
+    <div class="credit multi-item">
+        <p>Your current credit is: </p>
+        <div class="stat">
+            <div class="saldo-odometer odometer"></div>
+            <span class="type"> lessons left</span>
+        </div>
+        <script>
+                /* Saldo */
+                    const createOdometer = (el, value) => {
+                        const odometer = new Odometer({
+                        el: el,
+                        value: 0,
+                        });
+                    
+                        let hasRun = false;
+                    
+                        const options = {
+                        threshold: [0, 0.9],
+                        };
+                    
+                        const callback = (entries, observer) => {
+                        entries.forEach((entry) => {
+                            if (entry.isIntersecting) {
+                            if (!hasRun) {
+                                odometer.update(value);
+                                hasRun = true;
+                            }
+                            }
+                        });
+                        };
+                        const observer = new IntersectionObserver(callback, options);
+                        observer.observe(el);
+                    };
+                    
+                    const saldoOdometer = document.querySelector(".saldo-odometer");
+                    createOdometer(saldoOdometer, {{app.user.saldo}});
+
+                /* End Saldo */
+            </script>
+        <button id="top-up-button" class="conFlecha" onclick="toggleTopUpForm()"><i class="arrowDown"></i> &emsp; Top up</button>
+        </div>
+        <div class="top-up-form" style="display: none">
+            <h2>Top up your credit</h2>
+            <form class="p-3 y-3 x-4" id="top-up"{# action="{{ path('app_top_up') }}" method="post"#}>
+                <div class="d-flex flex-column">
+                    <label for="plan">Select your plan: </label>
+                </div>
+                <div>
+                    <select id="plan" name="plan" class="form-control" required>
+                        <option value="s1">Single lesson (30€)</option>
+                        <option value="b5">Bundle: 5 lessons (120€)</option>
+                        <option value="b10">Bundle: 10 lessons (220€)</option>
+                        <option value="b20">Bundle: 20 lessons (400€)</option>
+                        <option value="g25">Group of 2: 5 lessons (180€)</option>
+                        <option value="g210">Group of 2: 10 lessons (320€)</option>
+                        <option value="g35">Group of 3: 5 lessons (225€)</option>
+                        <option value="g310">Group of 3: 10 lessons (360€)</option>
+                        <option value="custom">Request a personalised plan (fill the message box)</option>
+                    </select>
+                </div>
+                <div id="request-container" style="display: none;">
+                    <div>
+                        <label for="request">Custom plan: </label>
+                    </div>
+                    <div>
+                        <textarea id="request" name="request" placeholder="Request a specific bundle"></textarea>
+                    </div>
+                </div>
+                <button type="submit">Request Top up</button>
+            </form>
+        </div>
+    </div>
+    <div class="col">
+        <h2>Your account</h2>
+        <div class="account multi-item">
+            <p>Your account details:</p>
+            <p><strong>Username:</strong> {{ app.user.username }}<br>
+            <strong>Email:</strong> {{ app.user.email }}<br>
+            <strong>Account Type:</strong> {{ app.user.parent ? 'Parent' : 'Student' }}</p>
+            <button onclick="location.href='{{ path('app_user_edit', {'id': app.user.id}) }}';">Change account details</button>        
+        </div>
+    </div>
+
+    {% if app.user.parent %}
+        <div class="col">
+        <h2>Student profiles</h2>
+        <div class="studentProfile multi-item">
+            {% if app.user.students is defined %}
+                {% for student in app.user.students %}
+                    <a href="{{ path('app_student_edit', {'id': student.id}) }}">
+                    <div class="student-card">
+                        <img src="{{ asset('/img/avatar/' ~ student.avatar) }}" alt="A"> &emsp;{{ student.name }}
+                    </div>
+                </a>
+                {% endfor %}
+                <button onclick="location.href='{{ path('app_student_new') }}';">Add child</button>    
+            {% else %}
+                <button onclick="location.href='{{ path('app_student_new') }}';">Create your student profile</button>           
+            {% endif %}
+        </div>
+        </div>
+{% else %}
+        <div class="col">
+        <h2>Student profile</h2>
+        <div class="studentProfile multi-item">
+        {% if app.user.students is defined %}
+            {% for student in app.user.students %}
+                <a href="{{ path('app_student_edit', {'id': student.id}) }}">
+                    <div class="student-card">
+                        <img src="{{ asset('/img/avatar/' ~ student.avatar) }}" alt="A"> &emsp;{{ student.name }}
+                    </div>
+                </a>
+            {% endfor %}
+        {% else %}  
+                <button onclick="location.href='{{ path('app_student_new') }}';">Create your student profile</button>
+        {% endif %}
+        </div>
+        </div>
+{% endif %}
+</div>
+<div id="DeleteUser">
+    <form method="post" action="{{ path('app_user_delete', {'id': app.user.id}) }}">
+        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ app.user.id) }}">
+        <button type="submit" class="delete" onclick="event.preventDefault(); if (confirm('Are you sure you want to delete your account?')) { this.closest('form').submit(); }">Delete account</button>
+    </form>
+</div>
+    
+</section>
+<script>
+		function toggleTopUpForm() {
+				const topUpForm = document.querySelector(".top-up-form");
+				if (topUpForm.style.display === "none") {
+						topUpForm.style.display = "block";
+				} else {
+						topUpForm.style.display = "none";
+				}
+		};
+		$(document).ready(function () {
+			document.addEventListener('DOMContentLoaded', function() {
+					const planSelect = document.getElementById('plan');
+					const requestContainer = document.getElementById('request-container');
+					planSelect.addEventListener('change', function() {
+							if (planSelect.value === 'custom') {
+									requestContainer.style.display = 'block';
+							} else {
+									requestContainer.style.display = 'none';
+							}
+					});
+			});
+		});
+</script>
+{% endblock %}

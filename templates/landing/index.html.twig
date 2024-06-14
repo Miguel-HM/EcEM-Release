@@ -1,0 +1,145 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Español con EvaMol{% endblock %}
+
+{% block body %}
+<div>
+    <div>
+        <!-- Intro Section -->
+        <div class="intro">
+            <section class="primera">
+                <div class="col-container">
+                    <div class="col">
+                        <div class="row">
+                            <img src="{{ asset('/img/EcEM2.png') }}" alt="Big logo" style="margin:2rem;">
+                        </div>
+                        <div class="text row">
+                            <h2 class="plain">A <span class="extra">unique</span> approach to learning Spanish</h2>
+                            <p>Customize your learning experience based on your goals, interests and level</p>
+                        </div>
+                        <div>
+                            <button onclick="location.href='{{ path('app_register') }}';">Get Started</button>                        </div>
+                    </div>
+                    <div class="col">
+                        <img src="{{ asset('/img/manoBCN.png') }}" alt="HolaMano" style="min-width:350px; max-width:800px;">
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- Why choose us? Section -->
+        <div class="why-choose-us">
+            <section>
+                <h2 class="extra">Why choose me?</h2>
+                <div class="col-container">
+                    <div class="col">
+                        <img src="{{ asset('/img/objetivo.png') }}" alt="Image description">
+                        <h3>You set the goals, we get you there</h3>
+                        <p>Customize your learning experience based on what you want to achieve and at your own pace.</p>
+                    </div>
+                    <div class="col">
+                        <img src="{{ asset('/img/gracioso.png') }}" alt="Image description">
+                        <h3>Fun engaging lessons</h3>
+                        <p>Every class is tailored to your interests to make learning fun and engaging.</p>
+                    </div>
+                    <div class="col">
+                        <img src="{{ asset('/img/certificado.png') }}" alt="Image description">
+                        <h3>Prepare for official qualifications</h3>
+                        <p>Get a coach certified in exam preparation for DELE, A levels, Baccalauréat and International Baccalaureate.</p>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- Testimonials Section -->
+        <div>
+            <section class="testimonials">
+                {% include 'landing/_testimonials.html.twig' %}
+            </section>
+        </div>
+
+        <!-- About me Section -->
+        <div class="about">
+            <section>
+                <div class="col-container">
+                    <div class="col">
+                        <img src="{{ asset('/img/intro2.png') }}" alt="Coach Eva" style="max-width: 600px;">
+                    </div>
+                    <div class="contenido text col">
+                        <div style="margin-bottom: 1.5rem;"><h2>About me</h2></div>
+                        <div>
+                            <p>I've been <b>teaching languages for a decade</b>, but i still keep learning how to be a better teacher every day!</p>
+                            <p>My classes are aimed at fulfilling <b>your</b> language goals while keeping you <b>entertained and engaged</b>.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="stats-container">
+                    <div class="stat">
+                        <div class="lessons-odometer odometer plus">0</div>
+                        <div class="type">Spanish lessons taught</div>
+                    </div>
+                    <div class="stat">
+                        <div class="students-odometer odometer plus">0</div>
+                        <div class="type">Happy students</div>
+                    </div>
+                    <script>
+                /* Stats */
+                document.addEventListener('DOMContentLoaded', function() {
+                    const createOdometer = (el, value) => {
+                        const odometer = new Odometer({
+                        el: el,
+                        value: 0,
+                        });
+                    
+                        let hasRun = false;
+                    
+                        const options = {
+                        threshold: [0, 0.9],
+                        };
+                    
+                        const callback = (entries, observer) => {
+                        entries.forEach((entry) => {
+                            if (entry.isIntersecting) {
+                            if (!hasRun) {
+                                odometer.update(value);
+                                hasRun = true;
+                            }
+                            }
+                        });
+                        };
+                        const observer = new IntersectionObserver(callback, options);
+                        observer.observe(el);
+                    };
+                    
+                    const lessonsOdometer = document.querySelector(".lessons-odometer");
+                    createOdometer(lessonsOdometer, 5000);
+                    
+                    const studentsOdometer = document.querySelector(".students-odometer");
+                    createOdometer(studentsOdometer, 100);
+                });
+
+                /* End Stats */
+            </script>
+                </div>
+                <div style="text-align: center;">
+                    <button onclick="location.href='{{ path('app_about') }}';">Learn more about me</button>                </div>
+            </section>
+        </div>
+
+        <!-- FAQ Section -->
+        <div class="faq">
+            <section>
+                <h2>Frequently Asked Questions</h2>
+                <br />
+                <div>
+                    <button>Do you offer individual and group lessons?</button>
+                    <button>Can siblings take lessons together?</button>
+                    <button>How do I start learning with you?</button>
+                    <button>Can I get the learning materials after the lesson?</button>
+                    <button>I'm going on a trip to a Spanish speaking country...</button>
+                </div>
+            </section>
+        </div>
+    </div>
+</div>
+{% endblock %}
